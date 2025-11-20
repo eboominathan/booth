@@ -13,7 +13,7 @@ class Booth extends Model
     protected $fillable = [
         'booth_master_id',
         'name',
-        'place',
+        'part_no',
         'mobile',
         'photo',
         'created_by',

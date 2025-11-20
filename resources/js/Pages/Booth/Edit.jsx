@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { Inertia } from "@inertiajs/inertia";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import Select from "react-select";
 
 export default function Edit({ booth, boothMasters = [] }) {
     const [form, setForm] = useState({
         booth_master_id: booth.booth_master_id || "",
         name: booth.name,
-        place: booth.place,
+        part_no: booth.part_no,
         mobile: booth.mobile,
         photo: null,
     });
@@ -22,10 +22,13 @@ export default function Edit({ booth, boothMasters = [] }) {
     function submit(e) {
         e.preventDefault();
         const data = new FormData();
+        data.append("_method", "PUT"); // 👈 REQUIRED for image uploads
+
         Object.keys(form).forEach((key) => {
             if (form[key] !== null) data.append(key, form[key]);
         });
-        put(route("booths.update", booth.id));
+
+        router.post(route("booths.update", booth.id), data);
     }
 
     return (
@@ -38,7 +41,7 @@ export default function Edit({ booth, boothMasters = [] }) {
         >
             <Head title="Edit Booth" />
             <div className="max-w-xl mx-auto mt-10">
-                <div className="bg-white shadow-md rounded-lg p-8">
+                <div className="p-8 bg-white rounded-lg shadow-md">
                     <form
                         onSubmit={submit}
                         encType="multipart/form-data"
@@ -73,7 +76,7 @@ export default function Edit({ booth, boothMasters = [] }) {
                                     })
                                 }
                                 isClearable
-                                placeholder="Select Booth"
+                                part_noholder="Select Booth"
                                 classNamePrefix="react-select"
                             />
                         </div>
@@ -85,20 +88,20 @@ export default function Edit({ booth, boothMasters = [] }) {
                                 name="name"
                                 value={form.name}
                                 onChange={handleChange}
-                                placeholder="Name"
-                                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                                part_noholder="Name"
+                                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
                             />
                         </div>
                         <div>
                             <label className="block mb-1 font-medium">
-                                Place
+                                Part No
                             </label>
                             <input
-                                name="place"
-                                value={form.place}
+                                name="part_no"
+                                value={form.part_no}
                                 onChange={handleChange}
-                                placeholder="Place"
-                                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                                part_noholder="part no"
+                                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
                             />
                         </div>
                         <div>
@@ -109,8 +112,8 @@ export default function Edit({ booth, boothMasters = [] }) {
                                 name="mobile"
                                 value={form.mobile}
                                 onChange={handleChange}
-                                placeholder="Mobile"
-                                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                                part_noholder="Mobile"
+                                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
                             />
                         </div>
                         <div>
@@ -121,12 +124,12 @@ export default function Edit({ booth, boothMasters = [] }) {
                                 type="file"
                                 name="photo"
                                 onChange={handleChange}
-                                className="w-full border border-gray-300 rounded px-3 py-2"
+                                className="w-full px-3 py-2 border border-gray-300 rounded"
                             />
                         </div>
                         <button
                             type="submit"
-                            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+                            className="w-full py-2 text-white transition bg-blue-600 rounded hover:bg-blue-700"
                         >
                             Update
                         </button>

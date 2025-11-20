@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
 
     // BoothMaster resource routes
     Route::resource('booth-masters', BoothMasterController::class)->except(['show']);
+    Route::get('/booths/export', [BoothController::class, 'export'])->name('booths.export');
 });
 
 // Admin routes

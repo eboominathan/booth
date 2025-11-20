@@ -8,11 +8,27 @@ use Inertia\Inertia;
 
 class BoothMasterController extends Controller
 {
-    public function index()
-    {
-        $boothMasters = BoothMaster::latest()->paginate(20);
-        return Inertia::render('BoothMaster/Index', ['boothMasters' => $boothMasters]);
+   public function index(Request $request)
+{
+    $search = $request->input('search');
+
+    $query = BoothMaster::query();
+
+    if (!empty($search)) {
+        $query->where(function ($q) use ($search) {
+            $q->whereRaw("name COLLATE utf8mb4_unicode_ci LIKE ?", ["%{$search}%"])
+              ->orWhereRaw("booth_no COLLATE utf8mb4_unicode_ci LIKE ?", ["%{$search}%"]);
+        });
     }
+
+    $boothMasters = $query->latest()->paginate(20)->withQueryString();
+
+    return Inertia::render('BoothMaster/Index', [
+        'boothMasters' => $boothMasters,
+        'filters'      => ['search' => $search],
+    ]);
+}
+
 
     public function create()
     {

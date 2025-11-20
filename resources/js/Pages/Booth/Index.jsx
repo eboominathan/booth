@@ -1,4 +1,4 @@
-import { Link, Head } from "@inertiajs/react";
+import { Link, Head, router } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 export default function Index({ booths }) {
     return (
@@ -10,26 +10,69 @@ export default function Index({ booths }) {
             }
         >
             <Head title="Booths" />
-            <div className="max-w-4xl mx-auto mt-10">
-                <div className="bg-white shadow-md rounded-lg p-8">
-                    <div className="flex justify-between items-center mb-4">
-                        <h3 className="text-lg font-bold">Booth List</h3>
+            <div className="w-full mx-auto mt-10 max-w-7xl">
+                <div className="p-8 bg-white rounded-lg shadow-md">
+                    <div className="flex items-center gap-2">
+                        {/* Search Input */}
+                        <input
+                            type="text"
+                            placeholder="Search..."
+                            defaultValue={booths.search || ""}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    router.get("/booths", {
+                                        search: e.target.value,
+                                    });
+                                }
+                            }}
+                            className="w-64 px-3 py-2 border rounded-md"
+                            id="searchBox"
+                        />
+
+                        {/* Clear Search */}
+                        <button
+                            onClick={() => {
+                                document.getElementById("searchBox").value = "";
+                                router.get("/booths");
+                            }}
+                            className="px-3 py-2 text-white bg-gray-600 rounded hover:bg-gray-700"
+                        >
+                            Clear
+                        </button>
+
+                        {/* Export to Excel */}
+                        <a
+                            href="/booths/export"
+                            className="px-4 py-2 text-white bg-green-600 rounded hover:bg-green-700"
+                        >
+                            Export Excel
+                        </a>
+
+                        {/* Create Button */}
                         <Link
                             href="/booths/create"
-                            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+                            className="px-4 py-2 text-white transition bg-blue-600 rounded hover:bg-blue-700"
                         >
                             Create Booth
                         </Link>
                     </div>
+
                     <div className="overflow-x-auto">
                         <table className="min-w-full bg-white border">
                             <thead>
                                 <tr>
-                                    <th className="border px-4 py-2">#</th>
-                                    <th className="border px-4 py-2">
-                                        Booth Number & Name
+                                    <th className="px-4 py-2 border">#</th>
+                                    <th className="px-4 py-2 border">
+                                        BoothNo
                                     </th>
-                                    <th className="border px-4 py-2">
+                                    <th className="px-4 py-2 border">Place</th>
+                                    <th className="px-4 py-2 border">Image</th>
+                                    <th className="px-4 py-2 border">Name</th>
+                                    <th className="px-4 py-2 border">PartNo</th>
+                                    <th className="px-4 py-2 border">
+                                        MobileNumber
+                                    </th>
+                                    <th className="px-4 py-2 border">
                                         Actions
                                     </th>
                                 </tr>
@@ -38,18 +81,40 @@ export default function Index({ booths }) {
                                 {booths.data && booths.data.length > 0 ? (
                                     booths.data.map((b, idx) => (
                                         <tr key={b.id}>
-                                            <td className="border px-4 py-2">
+                                            <td className="px-4 py-2 border">
                                                 {idx +
                                                     1 +
                                                     (booths.current_page - 1) *
                                                         booths.per_page}
                                             </td>
-                                            <td className="border px-4 py-2 font-semibold text-blue-900">
+                                            <td className="px-4 py-2 font-semibold text-blue-900 border">
                                                 {b.booth_master
-                                                    ? `${b.booth_master.booth_no} - ${b.booth_master.name}`
+                                                    ? `${b.booth_master.booth_no}`
                                                     : ""}
                                             </td>
-                                            <td className="border px-4 py-2">
+                                            <td className="px-4 py-2 font-semibold text-blue-900 border">
+                                                {b.booth_master
+                                                    ? `${b.booth_master.name}`
+                                                    : ""}
+                                            </td>
+                                            <img
+                                                src={`/storage/${b.photo}`}
+                                                alt="Booth Photo"
+                                                className="object-cover w-12 h-12 border rounded-full"
+                                            />
+
+                                            <td className="px-4 py-2 font-semibold text-blue-900 border">
+                                                {b.name ? `${b.name}` : ""}
+                                            </td>
+                                            <td className="px-4 py-2 font-semibold text-blue-900 border">
+                                                {b.part_no
+                                                    ? `${b.part_no}`
+                                                    : ""}
+                                            </td>
+                                            <td className="px-4 py-2 font-semibold text-blue-900 border">
+                                                {b.mobile ? `${b.mobile}` : ""}
+                                            </td>
+                                            <td className="px-4 py-2 border">
                                                 <div className="flex gap-2">
                                                     <Link
                                                         href={
@@ -57,12 +122,12 @@ export default function Index({ booths }) {
                                                             b.id +
                                                             "/edit"
                                                         }
-                                                        className="px-3 py-1 bg-yellow-400 text-white rounded hover:bg-yellow-500 text-xs font-semibold transition flex items-center gap-1"
+                                                        className="flex items-center gap-1 px-3 py-1 text-xs font-semibold text-white transition bg-yellow-400 rounded hover:bg-yellow-500"
                                                         title="Edit"
                                                     >
                                                         <svg
                                                             xmlns="http://www.w3.org/2000/svg"
-                                                            className="h-4 w-4"
+                                                            className="w-4 h-4"
                                                             fill="none"
                                                             viewBox="0 0 24 24"
                                                             stroke="currentColor"
@@ -80,7 +145,7 @@ export default function Index({ booths }) {
                                                         as="button"
                                                         method="delete"
                                                         href={"/booths/" + b.id}
-                                                        className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-xs font-semibold transition flex items-center gap-1"
+                                                        className="flex items-center gap-1 px-3 py-1 text-xs font-semibold text-white transition bg-red-500 rounded hover:bg-red-600"
                                                         title="Delete"
                                                         onClick={(e) => {
                                                             if (
@@ -93,7 +158,7 @@ export default function Index({ booths }) {
                                                     >
                                                         <svg
                                                             xmlns="http://www.w3.org/2000/svg"
-                                                            className="h-4 w-4"
+                                                            className="w-4 h-4"
                                                             fill="none"
                                                             viewBox="0 0 24 24"
                                                             stroke="currentColor"
@@ -115,7 +180,7 @@ export default function Index({ booths }) {
                                     <tr>
                                         <td
                                             colSpan={3}
-                                            className="text-center py-4"
+                                            className="py-4 text-center"
                                         >
                                             No booths found.
                                         </td>
@@ -125,7 +190,7 @@ export default function Index({ booths }) {
                         </table>
                     </div>
                     {/* Pagination */}
-                    <div className="mt-4 flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2 mt-4">
                         {booths.links &&
                             booths.links.map((link, i) => (
                                 <Link

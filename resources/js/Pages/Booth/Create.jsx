@@ -7,7 +7,7 @@ import Select from "react-select";
 export default function Create({ boothMasters = [] }) {
     const [form, setForm] = useState({
         booth_master_id: "",
-        place: "",
+        part_no: "",
         mobile: "",
         photo: null,
     });
@@ -37,9 +37,9 @@ export default function Create({ boothMasters = [] }) {
         >
             <Head title="Create Booth" />
             <div className="max-w-xl mx-auto mt-10">
-                <div className="bg-white shadow-lg rounded-xl p-8 relative overflow-hidden">
+                <div className="relative p-8 overflow-hidden bg-white shadow-lg rounded-xl">
                     <div className="flex items-center mb-6">
-                        <div className="bg-blue-500 text-white rounded-full p-3 mr-4">
+                        <div className="p-3 mr-4 text-white bg-blue-500 rounded-full">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 className="h-7 w-7"
@@ -59,7 +59,7 @@ export default function Create({ boothMasters = [] }) {
                             <h2 className="text-2xl font-bold text-blue-800">
                                 Create Booth
                             </h2>
-                            <div className="text-gray-500 text-sm">
+                            <div className="text-sm text-gray-500">
                                 Fill in the details to add a new booth
                             </div>
                         </div>
@@ -98,7 +98,7 @@ export default function Create({ boothMasters = [] }) {
                                     })
                                 }
                                 isClearable
-                                placeholder="Select Booth"
+                                part_noholder="Select Booth"
                                 classNamePrefix="react-select"
                             />
                         </div>
@@ -110,20 +110,21 @@ export default function Create({ boothMasters = [] }) {
                                 name="name"
                                 value={form.name}
                                 onChange={handleChange}
-                                placeholder="Name"
-                                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                                part_noholder="Name"
+                                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
                             />
                         </div>
                         <div>
                             <label className="block mb-1 font-medium">
-                                Place
+                                Part No
                             </label>
                             <input
-                                name="place"
-                                value={form.place}
+                                type="number"
+                                name="part_no"
+                                value={form.part_no}
                                 onChange={handleChange}
-                                placeholder="Place"
-                                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                                part_noholder="Part no"
+                                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
                             />
                         </div>
                         <div>
@@ -134,8 +135,8 @@ export default function Create({ boothMasters = [] }) {
                                 name="mobile"
                                 value={form.mobile}
                                 onChange={handleChange}
-                                placeholder="Mobile"
-                                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                                part_noholder="Mobile"
+                                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
                             />
                         </div>
                         <div>
@@ -146,16 +147,16 @@ export default function Create({ boothMasters = [] }) {
                                 type="file"
                                 name="photo"
                                 onChange={handleChange}
-                                className="w-full border border-gray-300 rounded px-3 py-2"
+                                className="w-full px-3 py-2 border border-gray-300 rounded"
                             />
                         </div>
                         <button
                             type="submit"
-                            className="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white py-2 rounded-lg font-semibold shadow hover:from-blue-700 hover:to-blue-600 transition"
+                            className="w-full py-2 font-semibold text-white transition rounded-lg shadow bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600"
                         >
                             <span className="inline-flex items-center">
                                 <svg
-                                    className="h-5 w-5 mr-2"
+                                    className="w-5 h-5 mr-2"
                                     fill="none"
                                     stroke="currentColor"
                                     strokeWidth="2"
