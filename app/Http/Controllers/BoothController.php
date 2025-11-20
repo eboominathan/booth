@@ -28,8 +28,7 @@ class BoothController extends Controller
     if (!empty($search)) {
         $query->where(function ($q) use ($search) {
             $q->where('name', 'LIKE', "%{$search}%")
-              ->orWhere('mobile', 'LIKE', "%{$search}%")
-              ->orWhere('part_no', 'LIKE', "%{$search}%")
+              ->orWhere('mobile', 'LIKE', "%{$search}%")              
               ->orWhereHas('boothMaster', function ($bm) use ($search) {
                   $bm->where('booth_no', 'LIKE', "%{$search}%")
                      ->orWhere('name', 'LIKE', "%{$search}%");
@@ -55,11 +54,11 @@ class BoothController extends Controller
     }
 
     public function store(Request $request)
-    {
+{
+    try {
         $data = $request->validate([
             'booth_master_id' => 'required|exists:booth_masters,id',
-            'name' => 'required|string|max:255',
-            'part_no' => 'required|string|max:255',
+            'name' => 'required|string|max:255',         
             'mobile' => 'nullable|string|max:30|unique:booths,mobile',
             'photo' => 'nullable|image|max:2048',
         ]);
@@ -69,10 +68,19 @@ class BoothController extends Controller
         }
 
         $data['created_by'] = $request->user()->id;
-        $booth = Booth::create($data);
 
-        return redirect()->route('booths.index');
-    }
+        Booth::create($data);
+
+        // Success toast message
+        return redirect()->back()->with("success", "Booth Level Agent created successfully!");
+
+     } catch (\Throwable $e) {
+    return redirect()->back()->withErrors([
+        'error' => $e->getMessage()
+    ]);
+}
+}
+
 
     public function edit(Booth $booth)
     {
@@ -90,8 +98,7 @@ class BoothController extends Controller
 
         $data = $request->validate([
             'booth_master_id' => 'required|exists:booth_masters,id',
-            'name'  => 'required|string|max:255',
-            'part_no' => 'required|string|max:255',
+            'name'  => 'required|string|max:255',            
             'mobile' => 'nullable|string|max:30|unique:booths,mobile,' . $booth->id,
             'photo' => 'nullable|image|max:2048',
         ]);

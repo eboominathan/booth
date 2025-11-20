@@ -15,8 +15,7 @@ class BoothsExport implements FromCollection, WithHeadings, ShouldAutoSize
             return [
                 'Booth No' => $b->boothMaster?->booth_no,
                 'Place' => $b->boothMaster?->name,
-                'Name' => $b->name,
-                'Part No' => $b->part_no,
+                'Name' => $b->name,                
                 'Mobile' => $b->mobile,
             ];
         });
@@ -27,8 +26,7 @@ class BoothsExport implements FromCollection, WithHeadings, ShouldAutoSize
         return [
             'Booth No',
             'Place',
-            'Name',
-            'Part No',
+            'Name',            
             'Mobile',
         ];
     }

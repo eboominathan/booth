@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('booth_master_id')->constrained('booth_masters')->cascadeOnDelete();
             $table->string('name');
-            $table->string('part_no');
+            $table->string('part_no')->nullable();
             $table->string('mobile', 30)->nullable();
             $table->string('photo')->nullable();
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();

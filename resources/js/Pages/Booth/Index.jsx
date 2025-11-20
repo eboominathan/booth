@@ -1,19 +1,21 @@
 import { Link, Head, router } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+
 export default function Index({ booths }) {
     return (
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Booths
+                    Booth Level Agents
                 </h2>
             }
         >
             <Head title="Booths" />
+
             <div className="w-full mx-auto mt-10 max-w-7xl">
                 <div className="p-8 bg-white rounded-lg shadow-md">
-                    <div className="flex items-center gap-2">
-                        {/* Search Input */}
+                    {/* Search / Buttons */}
+                    <div className="flex flex-wrap items-center gap-3 mb-4">
                         <input
                             type="text"
                             placeholder="Search..."
@@ -29,18 +31,16 @@ export default function Index({ booths }) {
                             id="searchBox"
                         />
 
-                        {/* Clear Search */}
                         <button
                             onClick={() => {
                                 document.getElementById("searchBox").value = "";
                                 router.get("/booths");
                             }}
-                            className="px-3 py-2 text-white bg-gray-600 rounded hover:bg-gray-700"
+                            className="px-4 py-2 text-white bg-gray-600 rounded hover:bg-gray-700"
                         >
                             Clear
                         </button>
 
-                        {/* Export to Excel */}
                         <a
                             href="/booths/export"
                             className="px-4 py-2 text-white bg-green-600 rounded hover:bg-green-700"
@@ -48,128 +48,107 @@ export default function Index({ booths }) {
                             Export Excel
                         </a>
 
-                        {/* Create Button */}
                         <Link
                             href="/booths/create"
-                            className="px-4 py-2 text-white transition bg-blue-600 rounded hover:bg-blue-700"
+                            className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700"
                         >
                             Create Booth
                         </Link>
                     </div>
 
+                    {/* Total Records */}
+                    <div className="mb-2 text-sm text-gray-700">
+                        Showing <b>{booths.from}</b> to <b>{booths.to}</b> of{" "}
+                        <b>{booths.total}</b> records
+                    </div>
+
+                    {/* Table */}
                     <div className="overflow-x-auto">
                         <table className="min-w-full bg-white border">
-                            <thead>
+                            <thead className="bg-gray-100">
                                 <tr>
-                                    <th className="px-4 py-2 border">#</th>
-                                    <th className="px-4 py-2 border">
-                                        BoothNo
+                                    <th className="px-4 py-2 text-left border">
+                                        #
                                     </th>
-                                    <th className="px-4 py-2 border">Place</th>
-                                    <th className="px-4 py-2 border">Image</th>
-                                    <th className="px-4 py-2 border">Name</th>
-                                    <th className="px-4 py-2 border">PartNo</th>
-                                    <th className="px-4 py-2 border">
-                                        MobileNumber
+                                    <th className="px-4 py-2 text-left border">
+                                        Booth No & Place
                                     </th>
-                                    <th className="px-4 py-2 border">
+                                    <th className="px-4 py-2 text-left border">
+                                        Name
+                                    </th>
+                                    <th className="px-4 py-2 text-left border">
+                                        Mobile
+                                    </th>
+                                    <th className="px-4 py-2 text-left border">
                                         Actions
                                     </th>
                                 </tr>
                             </thead>
+
                             <tbody>
-                                {booths.data && booths.data.length > 0 ? (
+                                {booths.data?.length > 0 ? (
                                     booths.data.map((b, idx) => (
-                                        <tr key={b.id}>
+                                        <tr
+                                            key={b.id}
+                                            className="hover:bg-gray-50"
+                                        >
                                             <td className="px-4 py-2 border">
                                                 {idx +
                                                     1 +
                                                     (booths.current_page - 1) *
                                                         booths.per_page}
                                             </td>
-                                            <td className="px-4 py-2 font-semibold text-blue-900 border">
-                                                {b.booth_master
-                                                    ? `${b.booth_master.booth_no}`
-                                                    : ""}
-                                            </td>
-                                            <td className="px-4 py-2 font-semibold text-blue-900 border">
-                                                {b.booth_master
-                                                    ? `${b.booth_master.name}`
-                                                    : ""}
-                                            </td>
-                                            <img
-                                                src={`/storage/${b.photo}`}
-                                                alt="Booth Photo"
-                                                className="object-cover w-12 h-12 border rounded-full"
-                                            />
 
                                             <td className="px-4 py-2 font-semibold text-blue-900 border">
-                                                {b.name ? `${b.name}` : ""}
+                                                {b.booth_master?.booth_no} -{" "}
+                                                {b.booth_master?.name}
                                             </td>
+
+                                            <td className="px-4 py-2 border">
+                                                <div className="flex items-center gap-3">
+                                                    <img
+                                                        src={
+                                                            b.photo
+                                                                ? `/storage/${b.photo}`
+                                                                : "/images/profile.jpg"
+                                                        }
+                                                        className="object-cover w-12 h-12 border rounded-full"
+                                                        alt=""
+                                                    />
+                                                    <span className="font-semibold text-blue-900">
+                                                        {b.name}
+                                                    </span>
+                                                </div>
+                                            </td>
+
                                             <td className="px-4 py-2 font-semibold text-blue-900 border">
-                                                {b.part_no
-                                                    ? `${b.part_no}`
-                                                    : ""}
+                                                {b.mobile}
                                             </td>
-                                            <td className="px-4 py-2 font-semibold text-blue-900 border">
-                                                {b.mobile ? `${b.mobile}` : ""}
-                                            </td>
+
                                             <td className="px-4 py-2 border">
                                                 <div className="flex gap-2">
                                                     <Link
-                                                        href={
-                                                            "/booths/" +
-                                                            b.id +
-                                                            "/edit"
-                                                        }
-                                                        className="flex items-center gap-1 px-3 py-1 text-xs font-semibold text-white transition bg-yellow-400 rounded hover:bg-yellow-500"
-                                                        title="Edit"
+                                                        href={`/booths/${b.id}/edit`}
+                                                        className="px-3 py-1 text-xs font-semibold text-white bg-yellow-500 rounded hover:bg-yellow-600"
                                                     >
-                                                        <svg
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            className="w-4 h-4"
-                                                            fill="none"
-                                                            viewBox="0 0 24 24"
-                                                            stroke="currentColor"
-                                                        >
-                                                            <path
-                                                                strokeLinecap="round"
-                                                                strokeLinejoin="round"
-                                                                strokeWidth={2}
-                                                                d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 112.828 2.828L11.828 15.828a2 2 0 01-2.828 0L5 12.828a2 2 0 010-2.828L9 13z"
-                                                            />
-                                                        </svg>
                                                         Edit
                                                     </Link>
+
                                                     <Link
                                                         as="button"
                                                         method="delete"
-                                                        href={"/booths/" + b.id}
-                                                        className="flex items-center gap-1 px-3 py-1 text-xs font-semibold text-white transition bg-red-500 rounded hover:bg-red-600"
-                                                        title="Delete"
+                                                        href={`/booths/${b.id}`}
+                                                        className="px-3 py-1 text-xs font-semibold text-white bg-red-500 rounded hover:bg-red-600"
                                                         onClick={(e) => {
                                                             if (
                                                                 !confirm(
                                                                     "Delete this booth?"
                                                                 )
-                                                            )
+                                                            ) {
                                                                 e.preventDefault();
+                                                            }
                                                         }}
                                                     >
-                                                        <svg
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            className="w-4 h-4"
-                                                            fill="none"
-                                                            viewBox="0 0 24 24"
-                                                            stroke="currentColor"
-                                                        >
-                                                            <path
-                                                                strokeLinecap="round"
-                                                                strokeLinejoin="round"
-                                                                strokeWidth={2}
-                                                                d="M6 18L18 6M6 6l12 12"
-                                                            />
-                                                        </svg>
                                                         Delete
                                                     </Link>
                                                 </div>
@@ -179,7 +158,7 @@ export default function Index({ booths }) {
                                 ) : (
                                     <tr>
                                         <td
-                                            colSpan={3}
+                                            colSpan={5}
                                             className="py-4 text-center"
                                         >
                                             No booths found.
@@ -189,24 +168,22 @@ export default function Index({ booths }) {
                             </tbody>
                         </table>
                     </div>
+
                     {/* Pagination */}
                     <div className="flex flex-wrap gap-2 mt-4">
-                        {booths.links &&
-                            booths.links.map((link, i) => (
-                                <Link
-                                    key={i}
-                                    href={link.url || "#"}
-                                    className={
-                                        `px-3 py-1 rounded border text-xs ` +
-                                        (link.active
-                                            ? "bg-blue-600 text-white border-blue-600"
-                                            : "bg-white text-blue-600 border-blue-200 hover:bg-blue-100")
-                                    }
-                                    dangerouslySetInnerHTML={{
-                                        __html: link.label,
-                                    }}
-                                />
-                            ))}
+                        {booths.links?.map((link, i) => (
+                            <Link
+                                key={i}
+                                href={link.url || "#"}
+                                className={
+                                    `px-3 py-1 rounded border text-xs ` +
+                                    (link.active
+                                        ? "bg-blue-600 text-white border-blue-600"
+                                        : "bg-white text-blue-600 border-blue-200 hover:bg-blue-100")
+                                }
+                                dangerouslySetInnerHTML={{ __html: link.label }}
+                            />
+                        ))}
                     </div>
                 </div>
             </div>

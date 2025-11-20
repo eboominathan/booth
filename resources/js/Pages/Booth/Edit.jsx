@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Inertia } from "@inertiajs/inertia";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, router } from "@inertiajs/react";
 import Select from "react-select";
+import toast from "react-hot-toast";
 
 export default function Edit({ booth, boothMasters = [] }) {
     const [form, setForm] = useState({
@@ -15,20 +15,34 @@ export default function Edit({ booth, boothMasters = [] }) {
 
     function handleChange(e) {
         const { name, value, files } = e.target;
-        if (files) return setForm({ ...form, [name]: files[0] });
-        setForm({ ...form, [name]: value });
+        if (files) {
+            setForm({ ...form, [name]: files[0] });
+        } else {
+            setForm({ ...form, [name]: value });
+        }
     }
 
     function submit(e) {
         e.preventDefault();
+
         const data = new FormData();
-        data.append("_method", "PUT"); // 👈 REQUIRED for image uploads
+        data.append("_method", "PUT"); // required
 
         Object.keys(form).forEach((key) => {
             if (form[key] !== null) data.append(key, form[key]);
         });
 
-        router.post(route("booths.update", booth.id), data);
+        router.post(route("booths.update", booth.id), data, {
+            forceFormData: true,
+            preserveScroll: true,
+            onSuccess: () => {
+                toast.success("Booth Level Agent Updated Successfully!");
+            },
+            onError: (errors) => {
+                const first = Object.values(errors)[0] || "Update failed!";
+                toast.error(first);
+            },
+        });
     }
 
     return (
@@ -76,10 +90,11 @@ export default function Edit({ booth, boothMasters = [] }) {
                                     })
                                 }
                                 isClearable
-                                part_noholder="Select Booth"
+                                placeholder="Select Booth"
                                 classNamePrefix="react-select"
                             />
                         </div>
+
                         <div>
                             <label className="block mb-1 font-medium">
                                 Name
@@ -88,22 +103,11 @@ export default function Edit({ booth, boothMasters = [] }) {
                                 name="name"
                                 value={form.name}
                                 onChange={handleChange}
-                                part_noholder="Name"
+                                placeholder="Name"
                                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
                             />
                         </div>
-                        <div>
-                            <label className="block mb-1 font-medium">
-                                Part No
-                            </label>
-                            <input
-                                name="part_no"
-                                value={form.part_no}
-                                onChange={handleChange}
-                                part_noholder="part no"
-                                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
-                            />
-                        </div>
+
                         <div>
                             <label className="block mb-1 font-medium">
                                 Mobile
@@ -112,10 +116,11 @@ export default function Edit({ booth, boothMasters = [] }) {
                                 name="mobile"
                                 value={form.mobile}
                                 onChange={handleChange}
-                                part_noholder="Mobile"
+                                placeholder="Mobile"
                                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
                             />
                         </div>
+
                         <div>
                             <label className="block mb-1 font-medium">
                                 Photo
@@ -127,6 +132,7 @@ export default function Edit({ booth, boothMasters = [] }) {
                                 className="w-full px-3 py-2 border border-gray-300 rounded"
                             />
                         </div>
+
                         <button
                             type="submit"
                             className="w-full py-2 text-white transition bg-blue-600 rounded hover:bg-blue-700"
